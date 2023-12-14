@@ -246,6 +246,108 @@ if uploaded_file is not None:
                 df_2 = pd.read_excel(excel_files[second])
                 gu = pd.read_excel(excel_files[second], sheet_name='sddprk')
                 count = 1
+                df_2.columns = df_2.iloc[0]
+                df_2 = df_2[1:]
+                _month=list(df_2.columns[4:])
+                df_2=df_2[['Main Heads','TYPE']+_month]
+                datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
+                gec=['Main Heads','TYPE']
+                gdate=gec+datetime_list
+                df_2.columns=gdate
+                y=list(df_2.columns)
+                x=list(set(y).intersection(set(lyst)))
+                x_set = set(x)
+                x1 = list(x_set - u_set)
+                q=gec+x1
+                df_2=df_2[q]
+                delt = int(df_2[(df_2['Main Heads'] == 'Solar') & (df_2['TYPE'] == 'Must Run')].index[0])
+                df_2 = df_2.drop(delt)
+
+                gu.columns = gu.iloc[1]
+                gu=gu[['Plant', 'Week  1', 'Week  2', 'Week  3', 'Week  4', 'Week  5',
+                               'Week  6', 'Week  7', 'Week  8', 'Week  9', 'Week 10', 'Week 11',
+                               'Week 12', 'Week 13', 'Week 14', 'Week 15', 'Week 16', 'Week 17',
+                               'Week 18', 'Week 19', 'Week 20', 'Week 21', 'Week 22', 'Week 23',
+                               'Week 24', 'Week 25', 'Week 26', 'Week 27', 'Week 28', 'Week 29',
+                               'Week 30', 'Week 31', 'Week 32', 'Week 33', 'Week 34', 'Week 35',
+                               'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41',
+                               'Week 42', 'Week 43', 'Week 44', 'Week 45', 'Week 46', 'Week 47',
+                               'Week 48']]
+                gu1=list(gu.columns)
+                for i in range(len(gu1)):
+                    gu1[i] = gu2[i]
+                gu.columns=gu1
+                u_substrings = [item.split('-')[0] for item in x1] 
+                matched_elements = [elem for elem in lyst3 for sub in u_substrings if sub in elem]
+                P=['Plant']
+                matched_elements=P+ matched_elements
+                counts = Counter(matched_elements)
+                filtered_columns = [col for col in list(gu.columns) if col in counts and counts[col] > 0]
+                guu=gu[filtered_columns]
+                del(guu['Plant'])
+                num_columns = guu.shape[1]
+                columns_to_keep = []
+                for i in range(0, num_columns, 16):
+                    columns_to_keep.extend(range(i, min(i + 4, num_columns)))
+                guu = guu.iloc[:, columns_to_keep]
+                guu['Plant'] = gu['Plant']
+    # ################################################################################################################                    
+                BI=guu.T
+                BI.columns=BI.iloc[-1]
+                BI.reset_index(inplace=True)
+                BI=BI[:-1]
+                BI=BI[['index','Guddu_BI    ']]
+                node_BI=BI['index'].unique()
+                summsBI = []
+                for category in BI['index'].unique():
+                    subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
+                    summBI = subsetBI.sum()
+                    summsBI.append((category, summBI))
+                BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
+                BI=BI.T
+                BI.columns=BI.iloc[0]
+                BI=BI[1:]
+                x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                BI.columns=x2
+                BI['Main Heads'] = 'Guddu_BI    '
+                BII=guu.T
+                BII.columns=BII.iloc[-1]
+                BII.reset_index(inplace=True)
+                BII=BII[:-1]
+                BII=BII[['index','Guddu_BII   ']]
+                node_BII=BII['index'].unique()
+                summsBII = []
+                for category in BII['index'].unique():
+                    subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
+                    summBII = subsetBII.sum()
+                    summsBII.append((category, summBII))
+                BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
+                BII=BII.T
+                BII.columns=BII.iloc[0]
+                BII=BII[1:]
+                x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                BII.columns=x2
+                BII['Main Heads'] = 'Guddu_BII   '
+                B747=guu.T
+                B747.columns=B747.iloc[-1]
+                B747.reset_index(inplace=True)
+                B747=B747[:-1]
+                B747=B747[['index','Guddu747    ']]
+                node_B747=B747['index'].unique()
+                summsB747 = []
+                for category in B747['index'].unique():
+                    subsetB747 = B747[B747['index'] == category]['Guddu747    ']
+                    summB747 = subsetB747.sum()
+                    summsB747.append((category, summB747))
+                B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
+                B747=B747.T
+                B747.columns=B747.iloc[0]
+                B747=B747[1:]
+                x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                B747.columns=x2
+                B747['Main Heads'] = 'Guddu747    '
+                df_22=pd.concat([df_2,BI, BII,B747], axis=0) 
+                
             if df_2 is None or not isinstance(df_2, pd.core.frame.DataFrame):
                 # Operations for df_1 when df_2 doesn't exist or is not a DataFrame
                 df_3 = df_11.copy()
@@ -254,9 +356,94 @@ if uploaded_file is not None:
             else:
                 # Operations when df_2 is a DataFrame
                 df_3 = pd.concat([df_11, df_22], axis=1, join='outer')
-            st.write(df_3)
-                
-
+                all_columns = list(df_3.columns)
+                other_columns = [col for col in all_columns if col not in group]
+                months = [col for col in other_columns if '-' in col]
+                months_as_dates = [datetime.strptime(month, '%b-%y') for month in months]
+                sorted_months = sorted(months_as_dates)
+                sorted_month_strings = [date.strftime('%b-%y') for date in sorted_months]
+                main_group_list = group + sorted_month_strings 
+                df_3=df_3[main_group_list]
+                df_3 = df_3.iloc[:, [0, 2] + list(range(4, len(df_3.columns)))]
+                main_factor = df_factor[1:]
+                main_factor=main_factor.iloc[:, 1:]
+            #st.write(df_3)
+            
+            uch=df_3[df_3['Main Heads'] == 'Uch']
+            del(uch['Variables'])
+            factor_row = df_factor[df_factor['index'] == 'Factor'].iloc[:, 1:]
+            common_cols = factor_row.columns.intersection(uch.columns)
+            new_row_values = factor_row[common_cols].values * uch[common_cols].values
+            new_row_df = pd.DataFrame(new_row_values, columns=common_cols, index=['Factor'])
+            uch = pd.concat([uch, new_row_df])
+            uch.iloc[1] = uch.iloc[1].where(uch.iloc[1] <= 152.375, 152.375)
+            uch2=uch.T
+            uch2=uch2[2:]
+            df_factor2=df_factor.T
+            df_factor2.columns=df_factor2.iloc[0]
+            df_factor2=df_factor2[1:]
+            df_factor3=df_factor2[:len(uch2[uch2.columns[1]].tolist())]
+            uch2['No. of days']=df_factor3['No. of days']
+            uch2['Factor2']=(uch2[uch2.columns[0]]*24*uch2['No. of days']/1000)-uch2['Factor']
+            uch3=uch2.T
+            uch3=uch3[3:]
+            uch=uch.append(uch3)
+            uch['Main Heads'].fillna('Uch2',inplace= True)
+            replacement_mapping = {152.375: 'Uch'}
+            uch['Main Heads'] = uch['Main Heads'].replace(replacement_mapping)
+            uch=uch[1:]
+            ################################################################################################################
+            liberty=df_3[df_3['Main Heads'] == 'Liberty']
+            del(liberty['Variables'])
+            factor_row = df_factor[df_factor['index'] == 'Factor'].iloc[:, 1:]
+            common_cols = factor_row.columns.intersection(liberty.columns)
+            new_row_values = factor_row[common_cols].values * liberty[common_cols].values
+            new_row_df = pd.DataFrame(new_row_values, columns=common_cols, index=['Factor'])
+            liberty = pd.concat([liberty, new_row_df])
+            liberty.iloc[1] = liberty.iloc[1].where(liberty.iloc[1] <= 61.904, 61.904)
+            liberty2=liberty.T
+            liberty2=liberty2[2:]
+            df_factor2=df_factor.T
+            df_factor2.columns=df_factor2.iloc[0]
+            df_factor2=df_factor2[1:]
+            df_factor3=df_factor2[:len(liberty2[liberty2.columns[1]].tolist())]
+            liberty2['No. of days']=df_factor3['No. of days']
+            liberty2['Factor2']=(liberty2[liberty2.columns[0]]*24*liberty2['No. of days']/1000)-liberty2['Factor']
+            liberty3=liberty2.T
+            liberty3=liberty3[3:]
+            liberty=liberty.append(liberty3)
+            liberty['Main Heads'].fillna('Liberty2',inplace= True)
+            replacement_mapping = {61.904: 'Liberty'}
+            liberty['Main Heads'] = liberty['Main Heads'].replace(replacement_mapping)
+            liberty=liberty[1:]
+            ##############################################################################################################
+            df_4=df_3.copy()
+            df_4=df_4[7:]
+            df_4 = df_4.dropna(subset=['Main Heads'])
+            items_to_remove = [
+                'Total Renewables', 'Uch', 'Total Coal', 'Total Generation (MR+LC)','Liberty','Guddu','Jamshoro Coal',
+                'Demand Left for RLNG+FO', 'Plant Name', 'CASA', 'Dedicated Gas','Tarbela ','Mangla','G.Barotha','Neelam Jhelam',
+                'Karot','Other Hydro'
+            ]
+            for item in items_to_remove:
+                if not df_4[df_4['Main Heads'] == item].empty:
+                    idx = int(df_4[df_4['Main Heads'] == item].index[0])
+                    df_4 = df_4.drop(idx)
+            guddu_df=df_4.tail(3)
+            plants=pd.concat([uch, liberty,guddu_df], axis=0)
+            del(plants['TYPE'])
+            del(plants['Variables'])
+            df_5=df_4[:-2]
+            df_5=df_5.iloc[:, 3:]
+            result_values=df_5.values * main_factor.values
+            df_6 = pd.DataFrame(result_values, columns=df_5.columns, index=df_5.index)
+            df_6['Main Heads'] = df_4['Main Heads']
+            df_6['Fuel Type'] = df_4['Variables']
+            replace_df_6 = ['D', 'F', 'G', 'I', 'J', np.nan] 
+            df_6['Fuel Type'] = df_6['Fuel Type'].replace(replace_df_6, np.nan)
+            #df_6.loc[df_6['Main Heads'] == 'Guddu', df_6.columns[:-2]] = 0
+            GEN1=pd.concat([df_6, plants], axis=0)   
+            st.write(GEN1)
 
 
 
