@@ -7,7 +7,7 @@ import os
 import io
 from datetime import datetime
 from collections import Counter
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta 
 import calendar
 from calendar import monthrange
 import warnings
@@ -139,20 +139,19 @@ if uploaded_file is not None:
                 count = 0
                 df_1.columns = df_1.iloc[0]
                 df_1 = df_1[1:]  # Skipping the first row as it's already used for column names
-                df_11=df_1.copy()
                 _month=list(df_11.columns[4:])
-                df_11=df_11[['Main Heads','TYPE','Variables']+_month]
+                df_1=df_1[['Main Heads','TYPE','Variables']+_month]
                 datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
                 gec=['Main Heads','TYPE','Variables']
                 gdate=gec+datetime_list
-                df_11.columns=gdate
-                y=list(df_11.columns)
+                df_1.columns=gdate
+                y=list(df_1.columns)
                 x=list(set(y).intersection(set(lyst)))
                 q=gec+x
-                df_11=df_11[q]
-                delt = int(df_11[(df_11['Main Heads'] == 'Solar') & (df_11['TYPE'] == 'Must Run')].index[0])
-                df_11 = df_11.drop(delt)
-                u=list(df_11.columns)[2:]
+                df_1=df_1[q]
+                delt = int(df_11[(df_1['Main Heads'] == 'Solar') & (df_1['TYPE'] == 'Must Run')].index[0])
+                df_1 = df_1.drop(delt)
+                u=list(df_1.columns)[2:]
                 u_set = set(u)
     
     
@@ -184,63 +183,64 @@ if uploaded_file is not None:
                     columns_to_keep.extend(range(i, min(i + 4, num_columns)))
                 guu = guu.iloc[:, columns_to_keep]
                 guu['Plant'] = gu['Plant']
-                st.write(df_11)
+                
 ###############################################################################################################
-                    # BI=guu.T
-                    # BI.columns=BI.iloc[-1]
-                    # BI.reset_index(inplace=True)
-                    # BI=BI[:-1]
-                    # BI=BI[['index','Guddu_BI    ']]
-                    # node_BI=BI['index'].unique()
-                    # summsBI = []
-                    # for category in BI['index'].unique():
-                    #     subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
-                    #     summBI = subsetBI.sum()
-                    #     summsBI.append((category, summBI))
-                    # BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
-                    # BI=BI.T
-                    # BI.columns=BI.iloc[0]
-                    # BI=BI[1:]
-                    # #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                    # BI.columns=x
-                    # BI['Main Heads'] = 'Guddu_BI    '
-                    # BII=guu.T
-                    # BII.columns=BII.iloc[-1]
-                    # BII.reset_index(inplace=True)
-                    # BII=BII[:-1]
-                    # BII=BII[['index','Guddu_BII   ']]
-                    # node_BII=BII['index'].unique()
-                    # summsBII = []
-                    # for category in BII['index'].unique():
-                    #     subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
-                    #     summBII = subsetBII.sum()
-                    #     summsBII.append((category, summBII))
-                    # BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
-                    # BII=BII.T
-                    # BII.columns=BII.iloc[0]
-                    # BII=BII[1:]
-                    # #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                    # BII.columns=x
-                    # BII['Main Heads'] = 'Guddu_BII   '
-                    # B747=guu.T
-                    # B747.columns=B747.iloc[-1]
-                    # B747.reset_index(inplace=True)
-                    # B747=B747[:-1]
-                    # B747=B747[['index','Guddu747    ']]
-                    # node_B747=B747['index'].unique()
-                    # summsB747 = []
-                    # for category in B747['index'].unique():
-                    #     subsetB747 = B747[B747['index'] == category]['Guddu747    ']
-                    #     summB747 = subsetB747.sum()
-                    #     summsB747.append((category, summB747))
-                    # B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
-                    # B747=B747.T
-                    # B747.columns=B747.iloc[0]
-                    # B747=B747[1:]
-                    # #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                    # B747.columns=x
-                    # B747['Main Heads'] = 'Guddu747    '
-                    # df_11=pd.concat([df_1,BI, BII,B747], axis=0)
+                BI=guu.T
+                BI.columns=BI.iloc[-1]
+                BI.reset_index(inplace=True)
+                BI=BI[:-1]
+                BI=BI[['index','Guddu_BI    ']]
+                node_BI=BI['index'].unique()
+                summsBI = []
+                for category in BI['index'].unique():
+                    subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
+                    summBI = subsetBI.sum()
+                    summsBI.append((category, summBI))
+                BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
+                BI=BI.T
+                BI.columns=BI.iloc[0]
+                BI=BI[1:]
+                    #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                BI.columns=x
+                BI['Main Heads'] = 'Guddu_BI    '
+                BII=guu.T
+                BII.columns=BII.iloc[-1]
+                BII.reset_index(inplace=True)
+                BII=BII[:-1]
+                BII=BII[['index','Guddu_BII   ']]
+                node_BII=BII['index'].unique()
+                summsBII = []
+                for category in BII['index'].unique():
+                    subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
+                    summBII = subsetBII.sum()
+                    summsBII.append((category, summBII))
+                BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
+                BII=BII.T
+                BII.columns=BII.iloc[0]
+                BII=BII[1:]
+                    #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                BII.columns=x
+                BII['Main Heads'] = 'Guddu_BII   '
+                B747=guu.T
+                B747.columns=B747.iloc[-1]
+                B747.reset_index(inplace=True)
+                B747=B747[:-1]
+                B747=B747[['index','Guddu747    ']]
+                node_B747=B747['index'].unique()
+                summsB747 = []
+                for category in B747['index'].unique():
+                    subsetB747 = B747[B747['index'] == category]['Guddu747    ']
+                    summB747 = subsetB747.sum()
+                    summsB747.append((category, summB747))
+                B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
+                B747=B747.T
+                B747.columns=B747.iloc[0]
+                B747=B747[1:]
+                    #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                B747.columns=x
+                B747['Main Heads'] = 'Guddu747    '
+                df_11=pd.concat([df_1,BI, BII,B747], axis=0)
+                
                 
             if second in excel_files:
                 df_2 = pd.read_excel(excel_files[second])
@@ -254,7 +254,7 @@ if uploaded_file is not None:
             else:
                 # Operations when df_2 is a DataFrame
                 df_3 = pd.concat([df_11, df_22], axis=1, join='outer')
-            
+            st.write(df_3)
                 
 
 
