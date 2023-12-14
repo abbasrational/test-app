@@ -65,7 +65,7 @@ if uploaded_file is not None:
         xlsx_file = 'MCOST.xlsx'
         if plt in excel_files:
             df = pd.read_excel(excel_files[plt])
-            #st.write(df)  # Displaying the DataFrame in Streamlit
+            st.write(df)  # Displaying the DataFrame in Streamlit
         if xlsx_file in excel_files:
             dfs = []
             for sheet_name in lyst:
