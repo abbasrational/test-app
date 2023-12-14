@@ -61,74 +61,38 @@ uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
 if uploaded_file is not None:
     with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
         excel_files = {name: io.BytesIO(zip_ref.read(name)) for name in zip_ref.namelist() if name.endswith('.xlsx')}
+        
         plt = 'Plant_Names.xlsx'  # Replace with the file you want to read
         xlsx_file = 'MCOST.xlsx'
-        if plt in excel_files:
-            df = pd.read_excel(excel_files[plt])
-            st.write(df)  # Displaying the DataFrame in Streamlit
-            if xlsx_file in excel_files:
-                dfs = []
-                for sheet_name in lyst:
-                    df = pd.read_excel(excel_files[xlsx_file], sheet_name=sheet_name)
-                    df2 = df[['Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 8', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21']]
-                    df2 = df2[4:77]
-                    new_column_names = ['Plant Name', 'Block/Unit', 'Capacity (MW)', 'Fuel Name', 'Fuel', 'V', 'Other Cost/excise duty', 'Specific Cost']
-                    df2.columns = new_column_names
-                    df2['Other Cost/excise duty'] = df2['Other Cost/excise duty'].astype(float)
-                    df2['V'] = df2['V'].astype(float)
-                    df2['Fuel'] = df2['Fuel'].astype(float)
-                    df2['Specific Cost'] = df2['Specific Cost'].astype(float)
-                    df2['VO&M'] = df2['V'] + df2['Other Cost/excise duty']
-                    df2 = df2[['Plant Name', 'Block/Unit', 'Fuel Name', 'Capacity (MW)', 'Fuel', 'VO&M', 'Specific Cost']]
-                    df2.rename(columns={'Specific Cost': 'Specific Cost_'+sheet_name}, inplace=True)
-                    df2.rename(columns={'Capacity (MW)': 'Capacity (MW)_'+sheet_name}, inplace=True)
-                    df2.rename(columns={'Fuel': 'Fuel_'+sheet_name}, inplace=True)
-                    df2.rename(columns={'VO&M': 'VO&M_'+sheet_name}, inplace=True)
-                    dfs.append(df2)
-                sf = pd.DataFrame(columns=['Plant Name', 'Block/Unit', 'Fuel Name'])
-                for df in dfs:
-                    sf = pd.merge(sf, df, on=['Plant Name', 'Block/Unit', 'Fuel Name'], how='outer')
-                sf['Block/Unit'] = sf['Block/Unit'].fillna('')
-                sf_columns=list(sf.columns)
-                c=['Plant Name', 'Block/Unit', 'Fuel Name']
-                fuel_columns = []
-                vo_and_m_columns = []
-                spc_columns=[]
-                for idx, col in enumerate(sf_columns):
-                    if 'Fuel_' in col:
-                        fuel_columns.append(idx)
-                    elif 'VO&M_' in col:
-                        vo_and_m_columns.append(idx)
-                    elif 'Specific Cost_' in col:
-                        spc_columns.append(idx)    
-    
-                fuel_col = [sf_columns[i] for i in fuel_columns]
-                fuel_col=c+fuel_col
-                vo_m_col = [sf_columns[i] for i in vo_and_m_columns]
-                vo_m_col=c+vo_m_col
-                spc_col = [sf_columns[i] for i in spc_columns]
-                spc_col=c+spc_col
-    
-                df_fuel= sf[fuel_col]
-                columns_with_fuel = list(df_fuel.columns)
-                columns_without_fuel = [col.replace('Fuel_', '') if 'Fuel_' in col else col for col in columns_with_fuel]
-                df_fuel.columns=columns_without_fuel
-                df_fuel.to_excel('fuel.xlsx',index=False)
-    
-                df_vo_m=sf[vo_m_col]
-                columns_with_vo_m = list(df_vo_m.columns)
-                columns_without_vo_m = [col.replace('VO&M_', '') if 'VO&M_' in col else col for col in columns_with_vo_m ]
-                df_vo_m.columns=columns_without_vo_m 
-                df_vo_m.to_excel('vom.xlsx',index=False)
-    
-                df_spc= sf[spc_col]
-                columns_with_spc = list(df_spc.columns)
-                columns_without_spc = [col.replace('Specific Cost_', '') if 'Specific Cost_' in col else col for col in columns_with_spc]
-                df_spc.columns=columns_without_spc
-                df_spc.to_excel('spc.xlsx',index=False)            
-                st.write(spc)
+        
+        if plt in excel_files and xlsx_file in excel_files:
+            PN = pd.read_excel(excel_files[plt])
+            for sheet_name in lyst:
+                df = pd.read_excel(excel_files[xlsx_file],sheet_name=sheet_name)
+                df2 = df[['Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 8', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21']]
+                df2 = df2[4:77]
+                new_column_names = ['Plant Name', 'Block/Unit', 'Capacity (MW)', 'Fuel Name', 'Fuel', 'V', 'Other Cost/excise duty', 'Specific Cost']
+                df2.columns = new_column_names
+                df2['Other Cost/excise duty'] = df2['Other Cost/excise duty'].astype(float)
+                df2['V'] = df2['V'].astype(float)
+                df2['Fuel'] = df2['Fuel'].astype(float)
+                df2['Specific Cost'] = df2['Specific Cost'].astype(float)
+                df2['VO&M'] = df2['V'] + df2['Other Cost/excise duty']
+                df2 = df2[['Plant Name', 'Block/Unit', 'Fuel Name', 'Capacity (MW)', 'Fuel', 'VO&M', 'Specific Cost']]
+                df2.rename(columns={'Specific Cost': 'Specific Cost_'+sheet_name}, inplace=True)
+                df2.rename(columns={'Capacity (MW)': 'Capacity (MW)_'+sheet_name}, inplace=True)
+                df2.rename(columns={'Fuel': 'Fuel_'+sheet_name}, inplace=True)
+                df2.rename(columns={'VO&M': 'VO&M_'+sheet_name}, inplace=True)
+                dfs.append(df2)        
+            sf = pd.DataFrame(columns=['Plant Name', 'Block/Unit', 'Fuel Name'])
+            for df in dfs:
+                sf = pd.merge(sf, df, on=['Plant Name', 'Block/Unit', 'Fuel Name'], how='outer')
+            sf['Block/Unit'] = sf['Block/Unit'].fillna('')
+            sf_columns=list(sf.columns)
+            st.write(sf)
+            
         else:
-            st.write(f"{file_to_read} not found in the uploaded zip file.")
+            st.write("Required files not found in the uploaded zip file.")
 # uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
 
 # if uploaded_file is not None:
