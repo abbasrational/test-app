@@ -137,7 +137,7 @@ if uploaded_file is not None:
                 df_1 = pd.read_excel(excel_files[first])
                 gu = pd.read_excel(excel_files[first], sheet_name='sddprk')
                 count = 0
-                df_11.columns = df_11.iloc[0]
+                df_11.columns = df_1.iloc[0]
                 df_11 = df_11[1:]
                 _month=list(df_11.columns[4:])
                 df_11=df_11[['Main Heads','TYPE','Variables']+_month]
