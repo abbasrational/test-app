@@ -446,6 +446,78 @@ if uploaded_file is not None:
             GEN1=pd.concat([df_6, plants], axis=0)   
             st.write(GEN1)
 
+            if Side == "NPCC Results":
+                df_spc2=pd.read_excel('spc.xlsx') ### Specific Cost: df_spc2
+                columns_to_convert = ['Plant Name', 'Block/Unit','Fuel Name']
+                PN[columns_to_convert] = PN[columns_to_convert].astype(str)
+                df_spc2[columns_to_convert] =df_spc2[columns_to_convert].astype(str)
+                PN['FP'] = PN['Plant Name']+PN['Block/Unit']+PN['Fuel Name']
+                df_spc2['FP'] = df_spc2['Plant Name']+df_spc2['Block/Unit']+df_spc2['Fuel Name']
+                FP2=list(df_spc2['FP'])
+                FP1=list(PN['FP'])
+                FP3=list(set(FP2).intersection(set(FP1)))
+                PN2 = PN[PN['FP'].isin(FP3)].copy()
+                PN2.reset_index(drop=True, inplace=True)
+                PN2['Specific Cost']='Specific Cost'
+                PN3=pd.merge(PN2, df_spc2,how='outer', on=['FP'])
+                columns_to_delete = ['Plant Name_y', 'Block/Unit_y', 'Fuel Name_y','FP']
+                PN3.drop(columns=columns_to_delete, inplace=True)
+                PN4 = PN[~PN['FP'].isin(FP3)].copy()
+                PN4.reset_index(drop=True, inplace=True)
+                PN4['Specific Cost']='Specific Cost'
+                PN5=pd.concat([PN4, PN3], axis=0)
+                PN5['Specific Cost'].fillna('Specific Cost',inplace =True)
+                PN5['Generation']='Generation'
+                PN5.reset_index(drop=True, inplace=True)
+                del(PN5['FP'])
+        
+                ############################################################################################################
+                # M A P P I N G        SP    GEN 
+        
+                PN6=pd.merge(PN5, GEN1, on=['Main Heads', 'Fuel Type'], how='left').drop_duplicates(subset=['Main Heads', 'Fuel Type'])
+                PN6 = PN6.dropna(subset=['Main Heads'])
+                GENFP2=list(PN6['Plant Name (WEM)'])
+                GENFP1=list(PN5['Plant Name (WEM)'])
+                GENFP3=list(set(GENFP2).intersection(set(GENFP1)))
+                PN7=PN5[~PN5['Plant Name (WEM)'].isin(GENFP3)].copy()
+                columns_to_delete = ['Plant Name', 'Block/Unit', 'Fuel Name']
+                PN7.drop(columns=columns_to_delete, inplace=True)
+                PN6.drop(columns=columns_to_delete, inplace=True)
+                monthly_columns = PN7.columns[PN7.columns.get_loc('Fuel Name_x') + 1: PN7.columns.get_loc('Generation')+1]
+                column_rename_mapping = {old_col: old_col + '_x' for old_col in monthly_columns}
+                PN7.rename(columns=column_rename_mapping, inplace=True)
+        
+                # M A P P I N G        SP    GEN 
+                SP_GEN=pd.concat([PN6, PN7], axis=0)
+                del(SP_GEN['Generation_x'])
+                SP_GEN['EEP Cost']='EEP Cost'
+                gen_start_index = SP_GEN.columns.get_loc('Specific Cost')
+                spec_cost_index = SP_GEN.columns.get_loc('Generation')
+                eep_cost_index = SP_GEN.columns.get_loc('EEP Cost')
+                gen_columns = SP_GEN.columns[gen_start_index + 1:spec_cost_index]
+                spec_cost_columns = SP_GEN.columns[spec_cost_index + 1:eep_cost_index]
+                tot=list(gen_columns) +list(spec_cost_columns)
+                EPP_df=SP_GEN[tot]
+                columns_EEP =list(EPP_df.columns)
+                for month in lyst:
+                    col_x = f"{month}_x"
+                    col_y = f"{month}_y"
+                    #EPP_df[f"{month}_result"] = EPP_df[col_x] * EPP_df[col_y]#.applymap(lambda x: 0 if x < 0 or pd.isnull(x) else x)
+                    EPP_df[f"{month}_result"] = EPP_df[col_x] * EPP_df[col_y]
+                    EPP_df[f"{month}_result"] = np.where(
+                        (EPP_df[f"{month}_result"] <= 0) | (EPP_df[f"{month}_result"].isnull()),0,EPP_df[f"{month}_result"])
+        
+                EPP_df.drop(columns=columns_EEP, inplace=True)
+                EPP_df.columns=lyst
+                NPCC_Results=pd.concat([SP_GEN, EPP_df ], axis=1)
+                #npcc_colss= [col[:-2] if col.endswith('_x') or col.endswith('_y') else col for col in list(NPCC_Results)]
+                #NPCC_Results.columns=npcc_colss
+                NPCC_Results['Generation']='Generation'
+                NPCC_Results.reset_index(drop=True, inplace=True)
+        
+                
+                st.write(NPCC_Results)
+
 
 
 
