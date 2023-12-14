@@ -236,7 +236,7 @@ if uploaded_file is not None:
                 B747.columns=x
                 B747['Main Heads'] = 'Guddu747    '
                 df_11=pd.concat([df_1,BI, BII,B747], axis=0)
-                st.write(df_11)
+                
                 
             if second in excel_files:
                 df_2 = pd.read_excel(excel_files[second])
@@ -248,6 +248,7 @@ if uploaded_file is not None:
             else:
                 # Operations when df_2 is a DataFrame
                 df_3 = pd.concat([df_1, df_2], axis=1, join='outer')
+            st.write(df_3)
                 
 
 
