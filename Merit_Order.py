@@ -126,7 +126,7 @@ if uploaded_file is not None:
             columns_without_spc = [col.replace('Specific Cost_', '') if 'Specific Cost_' in col else col for col in columns_with_spc]
             df_spc.columns=columns_without_spc
             df_spc.to_excel('spc.xlsx',index=False)
-            st.write(sf)
+            st.write(df_spc)
             
         else:
             st.write("Required files not found in the uploaded zip file.")
