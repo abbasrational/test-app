@@ -61,11 +61,16 @@ uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
 if uploaded_file is not None:
     with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
         excel_files = {name: io.BytesIO(zip_ref.read(name)) for name in zip_ref.namelist() if name.endswith('.xlsx')}
-        
+        first = '1.xlsx'
+        second = '2.xlsx'
         plt = 'Plant_Names.xlsx'  # Replace with the file you want to read
         xlsx_file = 'MCOST.xlsx'
         
-        if plt in excel_files and xlsx_file in excel_files:
+        if plt in excel_files and xlsx_file in excel_files and (first in excel_files or second in excel_files):
+            count = 0  # Assume initial count is 0
+            df_1 = None
+            df_2 = None
+            gu = None
             PN = pd.read_excel(excel_files[plt])
             dfs = []
             for sheet_name in lyst:
@@ -127,7 +132,130 @@ if uploaded_file is not None:
             df_spc.columns=columns_without_spc
             df_spc.to_excel('spc.xlsx',index=False)
             st.write(df_spc)
-            
+            # G E N E R A T I O N
+            if first in excel_files:
+                df_1 = pd.read_excel(excel_files[first])
+                gu = pd.read_excel(excel_files[first], sheet_name='sddprk')
+                count = 0
+                df_1.columns = df_1.iloc[0]
+                df_1 = df_1[1:]
+                _month=list(df_1.columns[4:])
+                df_1=df_1[['Main Heads','TYPE','Variables']+_month]
+                datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
+                gec=['Main Heads','TYPE','Variables']
+                gdate=gec+datetime_list
+                df_1.columns=gdate
+                y=list(df_1.columns)
+                x=list(set(y).intersection(set(lyst)))
+                q=gec+x
+                df_1=df_1[q]
+                delt = int(df_1[(df_1['Main Heads'] == 'Solar') & (df_1['TYPE'] == 'Must Run')].index[0])
+                df_1 = df_1.drop(delt)
+                u=list(df_1.columns)[2:]
+                u_set = set(u)
+                gu.columns = gu.iloc[1]
+                gu=gu[['Plant', 'Week  1', 'Week  2', 'Week  3', 'Week  4', 'Week  5',
+                               'Week  6', 'Week  7', 'Week  8', 'Week  9', 'Week 10', 'Week 11',
+                               'Week 12', 'Week 13', 'Week 14', 'Week 15', 'Week 16', 'Week 17',
+                               'Week 18', 'Week 19', 'Week 20', 'Week 21', 'Week 22', 'Week 23',
+                               'Week 24', 'Week 25', 'Week 26', 'Week 27', 'Week 28', 'Week 29',
+                               'Week 30', 'Week 31', 'Week 32', 'Week 33', 'Week 34', 'Week 35',
+                               'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41',
+                               'Week 42', 'Week 43', 'Week 44', 'Week 45', 'Week 46', 'Week 47',
+                               'Week 48']] #'Guddu_BI    '
+                gu1=list(gu.columns)
+                for i in range(len(gu1)):
+                    gu1[i] = gu2[i]
+                gu.columns=gu1
+                u_substrings = [item.split('-')[0] for item in u]
+                matched_elements = [elem for elem in lyst3 for sub in u_substrings if sub in elem]
+                P=['Plant']
+                matched_elements=P+ matched_elements
+                counts = Counter(matched_elements)
+                filtered_columns = [col for col in list(gu.columns) if col in counts and counts[col] > 0]
+                guu=gu[filtered_columns]
+                del(guu['Plant'])
+                num_columns = guu.shape[1]
+                columns_to_keep = []
+                for i in range(0, num_columns, 16):
+                    columns_to_keep.extend(range(i, min(i + 4, num_columns)))
+                guu = guu.iloc[:, columns_to_keep]
+                guu['Plant'] = gu['Plant']
+                BI=guu.T
+                BI.columns=BI.iloc[-1]
+                BI.reset_index(inplace=True)
+                BI=BI[:-1]
+                BI=BI[['index','Guddu_BI    ']]
+                node_BI=BI['index'].unique()
+                summsBI = []
+                for category in BI['index'].unique():
+                    subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
+                    summBI = subsetBI.sum()
+                    summsBI.append((category, summBI))
+                    BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
+                    BI=BI.T
+                    BI.columns=BI.iloc[0]
+                    BI=BI[1:]
+                        #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                    BI.columns=x
+                    BI['Main Heads'] = 'Guddu_BI    '
+                    BII=guu.T
+                    BII.columns=BII.iloc[-1]
+                    BII.reset_index(inplace=True)
+                    BII=BII[:-1]
+                    BII=BII[['index','Guddu_BII   ']]
+                    node_BII=BII['index'].unique()
+                    summsBII = []
+                    for category in BII['index'].unique():
+                        subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
+                        summBII = subsetBII.sum()
+                        summsBII.append((category, summBII))
+                    BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
+                    BII=BII.T
+                    BII.columns=BII.iloc[0]
+                    BII=BII[1:]
+                        #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                    BII.columns=x
+                    BII['Main Heads'] = 'Guddu_BII   '
+                    B747=guu.T
+                    B747.columns=B747.iloc[-1]
+                    B747.reset_index(inplace=True)
+                    B747=B747[:-1]
+                    B747=B747[['index','Guddu747    ']]
+                    node_B747=B747['index'].unique()
+                    summsB747 = []
+                    for category in B747['index'].unique():
+                        subsetB747 = B747[B747['index'] == category]['Guddu747    ']
+                        summB747 = subsetB747.sum()
+                        summsB747.append((category, summB747))
+                    B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
+                    B747=B747.T
+                    B747.columns=B747.iloc[0]
+                    B747=B747[1:]
+                        #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                    B747.columns=x
+                    B747['Main Heads'] = 'Guddu747    '
+                    df_11=pd.concat([df_1,BI, BII,B747], axis=0)
+
+                
+            if second in excel_files:
+                df_2 = pd.read_excel(excel_files[second])
+                gu = pd.read_excel(excel_files[second], sheet_name='sddprk')
+                count = 1
+            if df_2 is None or not isinstance(df_2, pd.core.frame.DataFrame):
+                # Operations for df_1 when df_2 doesn't exist or is not a DataFrame
+                df_3 = df_1.copy()
+            else:
+                # Operations when df_2 is a DataFrame
+                df_3 = pd.concat([df_1, df_2], axis=1, join='outer')
+                
+
+
+
+
+
+
+        
         else:
             st.write("Required files not found in the uploaded zip file.")
 # uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
