@@ -141,7 +141,6 @@ if uploaded_file is not None:
                 df_1 = df_1[1:]
                 _month=list(df_1.columns[4:])
                 df_1=df_1[['Main Heads','TYPE','Variables']+_month]
-                st.write(df_1)
                 datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
                 gec=['Main Heads','TYPE','Variables']
                 gdate=gec+datetime_list
@@ -154,21 +153,23 @@ if uploaded_file is not None:
                 df_1 = df_1.drop(delt)
                 u=list(df_1.columns)[2:]
                 u_set = set(u)
+    
+    
                 gu.columns = gu.iloc[1]
                 gu=gu[['Plant', 'Week  1', 'Week  2', 'Week  3', 'Week  4', 'Week  5',
-                               'Week  6', 'Week  7', 'Week  8', 'Week  9', 'Week 10', 'Week 11',
-                               'Week 12', 'Week 13', 'Week 14', 'Week 15', 'Week 16', 'Week 17',
-                               'Week 18', 'Week 19', 'Week 20', 'Week 21', 'Week 22', 'Week 23',
-                               'Week 24', 'Week 25', 'Week 26', 'Week 27', 'Week 28', 'Week 29',
-                               'Week 30', 'Week 31', 'Week 32', 'Week 33', 'Week 34', 'Week 35',
-                               'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41',
-                               'Week 42', 'Week 43', 'Week 44', 'Week 45', 'Week 46', 'Week 47',
-                               'Week 48']] #'Guddu_BI    '
+                           'Week  6', 'Week  7', 'Week  8', 'Week  9', 'Week 10', 'Week 11',
+                           'Week 12', 'Week 13', 'Week 14', 'Week 15', 'Week 16', 'Week 17',
+                           'Week 18', 'Week 19', 'Week 20', 'Week 21', 'Week 22', 'Week 23',
+                           'Week 24', 'Week 25', 'Week 26', 'Week 27', 'Week 28', 'Week 29',
+                           'Week 30', 'Week 31', 'Week 32', 'Week 33', 'Week 34', 'Week 35',
+                           'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41',
+                           'Week 42', 'Week 43', 'Week 44', 'Week 45', 'Week 46', 'Week 47',
+                           'Week 48']] #'Guddu_BI    '
                 gu1=list(gu.columns)
                 for i in range(len(gu1)):
                     gu1[i] = gu2[i]
                 gu.columns=gu1
-                u_substrings = [item.split('-')[0] for item in u]
+                u_substrings = [item.split('-')[0] for item in u] ################################## df_2 it is x1 instead u
                 matched_elements = [elem for elem in lyst3 for sub in u_substrings if sub in elem]
                 P=['Plant']
                 matched_elements=P+ matched_elements
@@ -176,68 +177,69 @@ if uploaded_file is not None:
                 filtered_columns = [col for col in list(gu.columns) if col in counts and counts[col] > 0]
                 guu=gu[filtered_columns]
                 del(guu['Plant'])
-                num_columns = guu.shape[1]
+                num_columns = guu.shape[1]        ##################SHAPE
                 columns_to_keep = []
                 for i in range(0, num_columns, 16):
                     columns_to_keep.extend(range(i, min(i + 4, num_columns)))
                 guu = guu.iloc[:, columns_to_keep]
                 guu['Plant'] = gu['Plant']
-                BI=guu.T
-                BI.columns=BI.iloc[-1]
-                BI.reset_index(inplace=True)
-                BI=BI[:-1]
-                BI=BI[['index','Guddu_BI    ']]
-                node_BI=BI['index'].unique()
-                summsBI = []
-                for category in BI['index'].unique():
-                    subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
-                    summBI = subsetBI.sum()
-                    summsBI.append((category, summBI))
-                BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
-                BI=BI.T
-                BI.columns=BI.iloc[0]
-                BI=BI[1:]
-                        #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                BI.columns=x
-                BI['Main Heads'] = 'Guddu_BI    '
-                BII=guu.T
-                BII.columns=BII.iloc[-1]
-                BII.reset_index(inplace=True)
-                BII=BII[:-1]
-                BII=BII[['index','Guddu_BII   ']]
-                node_BII=BII['index'].unique()
-                summsBII = []
-                for category in BII['index'].unique():
-                    subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
-                    summBII = subsetBII.sum()
-                    summsBII.append((category, summBII))
-                BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
-                BII=BII.T
-                BII.columns=BII.iloc[0]
-                BII=BII[1:]
-                        #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                BII.columns=x
-                BII['Main Heads'] = 'Guddu_BII   '
-                B747=guu.T
-                B747.columns=B747.iloc[-1]
-                B747.reset_index(inplace=True)
-                B747=B747[:-1]
-                B747=B747[['index','Guddu747    ']]
-                node_B747=B747['index'].unique()
-                summsB747 = []
-                for category in B747['index'].unique():
-                    subsetB747 = B747[B747['index'] == category]['Guddu747    ']
-                    summB747 = subsetB747.sum()
-                    summsB747.append((category, summB747))
-                B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
-                B747=B747.T
-                B747.columns=B747.iloc[0]
-                B747=B747[1:]
-                        #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                B747.columns=x
-                B747['Main Heads'] = 'Guddu747    '
-                df_11=pd.concat([df_1,BI, BII,B747], axis=0)
-                st.write(B747)
+                st.write(df_1)
+###############################################################################################################
+                    # BI=guu.T
+                    # BI.columns=BI.iloc[-1]
+                    # BI.reset_index(inplace=True)
+                    # BI=BI[:-1]
+                    # BI=BI[['index','Guddu_BI    ']]
+                    # node_BI=BI['index'].unique()
+                    # summsBI = []
+                    # for category in BI['index'].unique():
+                    #     subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
+                    #     summBI = subsetBI.sum()
+                    #     summsBI.append((category, summBI))
+                    # BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
+                    # BI=BI.T
+                    # BI.columns=BI.iloc[0]
+                    # BI=BI[1:]
+                    # #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                    # BI.columns=x
+                    # BI['Main Heads'] = 'Guddu_BI    '
+                    # BII=guu.T
+                    # BII.columns=BII.iloc[-1]
+                    # BII.reset_index(inplace=True)
+                    # BII=BII[:-1]
+                    # BII=BII[['index','Guddu_BII   ']]
+                    # node_BII=BII['index'].unique()
+                    # summsBII = []
+                    # for category in BII['index'].unique():
+                    #     subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
+                    #     summBII = subsetBII.sum()
+                    #     summsBII.append((category, summBII))
+                    # BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
+                    # BII=BII.T
+                    # BII.columns=BII.iloc[0]
+                    # BII=BII[1:]
+                    # #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                    # BII.columns=x
+                    # BII['Main Heads'] = 'Guddu_BII   '
+                    # B747=guu.T
+                    # B747.columns=B747.iloc[-1]
+                    # B747.reset_index(inplace=True)
+                    # B747=B747[:-1]
+                    # B747=B747[['index','Guddu747    ']]
+                    # node_B747=B747['index'].unique()
+                    # summsB747 = []
+                    # for category in B747['index'].unique():
+                    #     subsetB747 = B747[B747['index'] == category]['Guddu747    ']
+                    #     summB747 = subsetB747.sum()
+                    #     summsB747.append((category, summB747))
+                    # B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
+                    # B747=B747.T
+                    # B747.columns=B747.iloc[0]
+                    # B747=B747[1:]
+                    # #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
+                    # B747.columns=x
+                    # B747['Main Heads'] = 'Guddu747    '
+                    # df_11=pd.concat([df_1,BI, BII,B747], axis=0)
                 
             if second in excel_files:
                 df_2 = pd.read_excel(excel_files[second])
