@@ -245,6 +245,8 @@ if uploaded_file is not None:
             if df_2 is None or not isinstance(df_2, pd.core.frame.DataFrame):
                 # Operations for df_1 when df_2 doesn't exist or is not a DataFrame
                 df_3 = df_11.copy()
+                main_factor = df_factor[1:]
+                main_factor=main_factor[u[1:]]
             else:
                 # Operations when df_2 is a DataFrame
                 df_3 = pd.concat([df_11, df_22], axis=1, join='outer')
