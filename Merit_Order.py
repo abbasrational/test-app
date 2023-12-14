@@ -61,13 +61,32 @@ uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
 if uploaded_file is not None:
     with zipfile.ZipFile(uploaded_file, 'r') as zip_ref:
         excel_files = {name: io.BytesIO(zip_ref.read(name)) for name in zip_ref.namelist() if name.endswith('.xlsx')}
-
-        # Example: Read a specified Excel file
-        file_to_read = 'Plant_Names.xlsx'  # Replace with the file you want to read
-        if file_to_read in excel_files:
-            df = pd.read_excel(excel_files[file_to_read])
-            st.write(df)  # Displaying the DataFrame in Streamlit
-
+        plt = 'Plant_Names.xlsx'  # Replace with the file you want to read
+        xlsx_file = 'MCOST.xlsx'
+        if plt in excel_files:
+            df = pd.read_excel(excel_files[plt])
+            #st.write(df)  # Displaying the DataFrame in Streamlit
+        if xlsx_file in excel_files:
+            dfs = []
+            for sheet_name in lyst:
+                df = pd.read_excel(excel_files[xlsx_file], sheet_name=sheet_name)
+                df2 = df[['Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 8', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21']]
+                df2 = df2[4:77]
+                new_column_names = ['Plant Name', 'Block/Unit', 'Capacity (MW)', 'Fuel Name', 'Fuel', 'V', 'Other Cost/excise duty', 'Specific Cost']
+                df2.columns = new_column_names
+                df2['Other Cost/excise duty'] = df2['Other Cost/excise duty'].astype(float)
+                df2['V'] = df2['V'].astype(float)
+                df2['Fuel'] = df2['Fuel'].astype(float)
+                df2['Specific Cost'] = df2['Specific Cost'].astype(float)
+                df2['VO&M'] = df2['V'] + df2['Other Cost/excise duty']
+                df2 = df2[['Plant Name', 'Block/Unit', 'Fuel Name', 'Capacity (MW)', 'Fuel', 'VO&M', 'Specific Cost']]
+                df2.rename(columns={'Specific Cost': 'Specific Cost_'+sheet_name}, inplace=True)
+                df2.rename(columns={'Capacity (MW)': 'Capacity (MW)_'+sheet_name}, inplace=True)
+                df2.rename(columns={'Fuel': 'Fuel_'+sheet_name}, inplace=True)
+                df2.rename(columns={'VO&M': 'VO&M_'+sheet_name}, inplace=True)
+                dfs.append(df2)
+            sf = pd.DataFrame(columns=['Plant Name', 'Block/Unit', 'Fuel Name'])
+            st.write(sf)
         else:
             st.write(f"{file_to_read} not found in the uploaded zip file.")
 # uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
