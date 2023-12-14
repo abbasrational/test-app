@@ -244,10 +244,10 @@ if uploaded_file is not None:
                 count = 1
             if df_2 is None or not isinstance(df_2, pd.core.frame.DataFrame):
                 # Operations for df_1 when df_2 doesn't exist or is not a DataFrame
-                df_3 = df_1.copy()
+                df_3 = df_11.copy()
             else:
                 # Operations when df_2 is a DataFrame
-                df_3 = pd.concat([df_1, df_2], axis=1, join='outer')
+                df_3 = pd.concat([df_11, df_22], axis=1, join='outer')
             st.write(df_3)
                 
 
