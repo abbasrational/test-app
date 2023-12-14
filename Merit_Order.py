@@ -356,6 +356,7 @@ if uploaded_file is not None:
             else:
                 # Operations when df_2 is a DataFrame
                 df_3 = pd.concat([df_11, df_22], axis=1, join='outer')
+                group=['Main Heads', 'TYPE','Variables']
                 all_columns = list(df_3.columns)
                 other_columns = [col for col in all_columns if col not in group]
                 months = [col for col in other_columns if '-' in col]
