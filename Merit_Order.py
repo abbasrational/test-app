@@ -137,21 +137,21 @@ if uploaded_file is not None:
                 df_1 = pd.read_excel(excel_files[first])
                 gu = pd.read_excel(excel_files[first], sheet_name='sddprk')
                 count = 0
-                df_1.columns = df_1.iloc[0]
-                df_1 = df_1[1:]
-                _month=list(df_1.columns[4:])
-                df_1=df_1[['Main Heads','TYPE','Variables']+_month]
+                df_11.columns = df_11.iloc[0]
+                df_11 = df_11[1:]
+                _month=list(df_11.columns[4:])
+                df_11=df_11[['Main Heads','TYPE','Variables']+_month]
                 datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
                 gec=['Main Heads','TYPE','Variables']
                 gdate=gec+datetime_list
-                df_1.columns=gdate
-                y=list(df_1.columns)
+                df_11.columns=gdate
+                y=list(df_11.columns)
                 x=list(set(y).intersection(set(lyst)))
                 q=gec+x
-                df_1=df_1[q]
-                delt = int(df_1[(df_1['Main Heads'] == 'Solar') & (df_1['TYPE'] == 'Must Run')].index[0])
-                df_1 = df_1.drop(delt)
-                u=list(df_1.columns)[2:]
+                df_11=df_11[q]
+                delt = int(df_11[(df_11['Main Heads'] == 'Solar') & (df_11['TYPE'] == 'Must Run')].index[0])
+                df_11 = df_11.drop(delt)
+                u=list(df_11.columns)[2:]
                 u_set = set(u)
     
     
@@ -183,7 +183,7 @@ if uploaded_file is not None:
                     columns_to_keep.extend(range(i, min(i + 4, num_columns)))
                 guu = guu.iloc[:, columns_to_keep]
                 guu['Plant'] = gu['Plant']
-                st.write(df_1)
+                st.write(df_11)
 ###############################################################################################################
                     # BI=guu.T
                     # BI.columns=BI.iloc[-1]
