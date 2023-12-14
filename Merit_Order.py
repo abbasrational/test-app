@@ -67,6 +67,7 @@ if uploaded_file is not None:
         
         if plt in excel_files and xlsx_file in excel_files:
             PN = pd.read_excel(excel_files[plt])
+            dfs = []
             for sheet_name in lyst:
                 df = pd.read_excel(excel_files[xlsx_file],sheet_name=sheet_name)
                 df2 = df[['Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 8', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21']]
