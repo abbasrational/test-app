@@ -137,8 +137,9 @@ if uploaded_file is not None:
                 df_1 = pd.read_excel(excel_files[first])
                 gu = pd.read_excel(excel_files[first], sheet_name='sddprk')
                 count = 0
-                df_11.columns = df_1.iloc[0]
-                df_11 = df_11[1:]
+                df_1.columns = df_1.iloc[0]
+                df_1 = df_1[1:]  # Skipping the first row as it's already used for column names
+                df_11=df_1.copy()
                 _month=list(df_11.columns[4:])
                 df_11=df_11[['Main Heads','TYPE','Variables']+_month]
                 datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
