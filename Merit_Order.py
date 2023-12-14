@@ -141,6 +141,7 @@ if uploaded_file is not None:
                 df_1 = df_1[1:]
                 _month=list(df_1.columns[4:])
                 df_1=df_1[['Main Heads','TYPE','Variables']+_month]
+                st.write(df_1)
                 datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
                 gec=['Main Heads','TYPE','Variables']
                 gdate=gec+datetime_list
@@ -250,7 +251,7 @@ if uploaded_file is not None:
             else:
                 # Operations when df_2 is a DataFrame
                 df_3 = pd.concat([df_11, df_22], axis=1, join='outer')
-            st.write(df_3)
+            
                 
 
 
