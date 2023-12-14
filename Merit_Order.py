@@ -86,7 +86,47 @@ if uploaded_file is not None:
                 df2.rename(columns={'VO&M': 'VO&M_'+sheet_name}, inplace=True)
                 dfs.append(df2)
             sf = pd.DataFrame(columns=['Plant Name', 'Block/Unit', 'Fuel Name'])
-            st.write(sf)
+            for df in dfs:
+                sf = pd.merge(sf, df, on=['Plant Name', 'Block/Unit', 'Fuel Name'], how='outer')
+            sf['Block/Unit'] = sf['Block/Unit'].fillna('')
+            sf_columns=list(sf.columns)
+            c=['Plant Name', 'Block/Unit', 'Fuel Name']
+            fuel_columns = []
+            vo_and_m_columns = []
+            spc_columns=[]
+            for idx, col in enumerate(sf_columns):
+                if 'Fuel_' in col:
+                    fuel_columns.append(idx)
+                elif 'VO&M_' in col:
+                    vo_and_m_columns.append(idx)
+                elif 'Specific Cost_' in col:
+                    spc_columns.append(idx)    
+
+            fuel_col = [sf_columns[i] for i in fuel_columns]
+            fuel_col=c+fuel_col
+            vo_m_col = [sf_columns[i] for i in vo_and_m_columns]
+            vo_m_col=c+vo_m_col
+            spc_col = [sf_columns[i] for i in spc_columns]
+            spc_col=c+spc_col
+
+            df_fuel= sf[fuel_col]
+            columns_with_fuel = list(df_fuel.columns)
+            columns_without_fuel = [col.replace('Fuel_', '') if 'Fuel_' in col else col for col in columns_with_fuel]
+            df_fuel.columns=columns_without_fuel
+            df_fuel.to_excel('fuel.xlsx',index=False)
+
+            df_vo_m=sf[vo_m_col]
+            columns_with_vo_m = list(df_vo_m.columns)
+            columns_without_vo_m = [col.replace('VO&M_', '') if 'VO&M_' in col else col for col in columns_with_vo_m ]
+            df_vo_m.columns=columns_without_vo_m 
+            df_vo_m.to_excel('vom.xlsx',index=False)
+
+            df_spc= sf[spc_col]
+            columns_with_spc = list(df_spc.columns)
+            columns_without_spc = [col.replace('Specific Cost_', '') if 'Specific Cost_' in col else col for col in columns_with_spc]
+            df_spc.columns=columns_without_spc
+            df_spc.to_excel('spc.xlsx',index=False)            
+            st.write(spc)
         else:
             st.write(f"{file_to_read} not found in the uploaded zip file.")
 # uploaded_file = st.sidebar.file_uploader("Upload a zip file", type="zip")
