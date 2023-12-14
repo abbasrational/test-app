@@ -131,7 +131,7 @@ if uploaded_file is not None:
             columns_without_spc = [col.replace('Specific Cost_', '') if 'Specific Cost_' in col else col for col in columns_with_spc]
             df_spc.columns=columns_without_spc
             df_spc.to_excel('spc.xlsx',index=False)
-            st.write(df_spc)
+            
             # G E N E R A T I O N
             if first in excel_files:
                 df_1 = pd.read_excel(excel_files[first])
@@ -192,51 +192,51 @@ if uploaded_file is not None:
                     subsetBI = BI[BI['index'] == category]['Guddu_BI    ']
                     summBI = subsetBI.sum()
                     summsBI.append((category, summBI))
-                    BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
-                    BI=BI.T
-                    BI.columns=BI.iloc[0]
-                    BI=BI[1:]
+                BI = pd.DataFrame(summsBI, columns=['index', 'BI'])
+                BI=BI.T
+                BI.columns=BI.iloc[0]
+                BI=BI[1:]
                         #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                    BI.columns=x
-                    BI['Main Heads'] = 'Guddu_BI    '
-                    BII=guu.T
-                    BII.columns=BII.iloc[-1]
-                    BII.reset_index(inplace=True)
-                    BII=BII[:-1]
-                    BII=BII[['index','Guddu_BII   ']]
-                    node_BII=BII['index'].unique()
-                    summsBII = []
-                    for category in BII['index'].unique():
-                        subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
-                        summBII = subsetBII.sum()
-                        summsBII.append((category, summBII))
-                    BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
-                    BII=BII.T
-                    BII.columns=BII.iloc[0]
-                    BII=BII[1:]
+                BI.columns=x
+                BI['Main Heads'] = 'Guddu_BI    '
+                BII=guu.T
+                BII.columns=BII.iloc[-1]
+                BII.reset_index(inplace=True)
+                BII=BII[:-1]
+                BII=BII[['index','Guddu_BII   ']]
+                node_BII=BII['index'].unique()
+                summsBII = []
+                for category in BII['index'].unique():
+                    subsetBII = BII[BII['index'] == category]['Guddu_BII   ']
+                    summBII = subsetBII.sum()
+                    summsBII.append((category, summBII))
+                BII = pd.DataFrame(summsBII, columns=['index', 'BII'])
+                BII=BII.T
+                BII.columns=BII.iloc[0]
+                BII=BII[1:]
                         #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                    BII.columns=x
-                    BII['Main Heads'] = 'Guddu_BII   '
-                    B747=guu.T
-                    B747.columns=B747.iloc[-1]
-                    B747.reset_index(inplace=True)
-                    B747=B747[:-1]
-                    B747=B747[['index','Guddu747    ']]
-                    node_B747=B747['index'].unique()
-                    summsB747 = []
-                    for category in B747['index'].unique():
-                        subsetB747 = B747[B747['index'] == category]['Guddu747    ']
-                        summB747 = subsetB747.sum()
-                        summsB747.append((category, summB747))
-                    B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
-                    B747=B747.T
-                    B747.columns=B747.iloc[0]
-                    B747=B747[1:]
+                BII.columns=x
+                BII['Main Heads'] = 'Guddu_BII   '
+                B747=guu.T
+                B747.columns=B747.iloc[-1]
+                B747.reset_index(inplace=True)
+                B747=B747[:-1]
+                B747=B747[['index','Guddu747    ']]
+                node_B747=B747['index'].unique()
+                summsB747 = []
+                for category in B747['index'].unique():
+                    subsetB747 = B747[B747['index'] == category]['Guddu747    ']
+                    summB747 = subsetB747.sum()
+                    summsB747.append((category, summB747))
+                B747 = pd.DataFrame(summsB747, columns=['index', 'Guddu747    '])
+                B747=B747.T
+                B747.columns=B747.iloc[0]
+                B747=B747[1:]
                         #x2 = sorted(x1, key=lambda x: (month_order.index(x[:4]), int(x[4:])))
-                    B747.columns=x
-                    B747['Main Heads'] = 'Guddu747    '
-                    df_11=pd.concat([df_1,BI, BII,B747], axis=0)
-
+                B747.columns=x
+                B747['Main Heads'] = 'Guddu747    '
+                df_11=pd.concat([df_1,BI, BII,B747], axis=0)
+                st.write(df_11)
                 
             if second in excel_files:
                 df_2 = pd.read_excel(excel_files[second])
