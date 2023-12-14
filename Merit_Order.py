@@ -149,7 +149,7 @@ if uploaded_file is not None:
                 x=list(set(y).intersection(set(lyst)))
                 q=gec+x
                 df_1=df_1[q]
-                delt = int(df_11[(df_1['Main Heads'] == 'Solar') & (df_1['TYPE'] == 'Must Run')].index[0])
+                delt = int(df_1[(df_1['Main Heads'] == 'Solar') & (df_1['TYPE'] == 'Must Run')].index[0])
                 df_1 = df_1.drop(delt)
                 u=list(df_1.columns)[2:]
                 u_set = set(u)
