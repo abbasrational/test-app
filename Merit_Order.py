@@ -139,7 +139,7 @@ if uploaded_file is not None:
                 count = 0
                 df_1.columns = df_1.iloc[0]
                 df_1 = df_1[1:]  # Skipping the first row as it's already used for column names
-                _month=list(df_11.columns[4:])
+                _month=list(df_1.columns[4:])
                 df_1=df_1[['Main Heads','TYPE','Variables']+_month]
                 datetime_list = pd.to_datetime(_month).strftime('%b-%y').tolist()
                 gec=['Main Heads','TYPE','Variables']
